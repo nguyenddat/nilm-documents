@@ -9,6 +9,7 @@ tags:
   - nilm/foundations
 sources:
   - "[[Papers/contents/zoha-2012-nilm-survey-general-framework-of-nilm|Zoha et al. (2012) – General Framework of NILM]]"
+  - "[[Papers/contents/zoha-2012-nilm-survey-learning-and-inference-in-nilm-systems|Zoha et al. (2012) – Learning and Inference in NILM Systems]]"
 related:
   - "[[NILM là gì]]"
   - "[[Load Disaggregation]]"
@@ -19,90 +20,103 @@ related:
 
 | Ký hiệu | Tên gọi | Ý nghĩa |
 | --- | --- | --- |
-| $t$ | Thời điểm lấy mẫu | Chỉ số thời gian; $t=1,\ldots,T$ là toàn bộ khoảng quan sát. |
-| $N$ | Số thiết bị mô hình hóa | Số thiết bị được đưa vào bài toán NILM. |
+| $t$ | Thời điểm lấy mẫu | $t=1,\ldots,T$ là khoảng quan sát. |
+| $i$ | Chỉ số thiết bị | $i=1,\ldots,N$. |
+| $N$ | Số thiết bị mô hình hóa | Số thiết bị có trong thư viện dấu vết tải. |
 | $P(t)$ | Công suất tổng | Công suất quan sát tại công tơ chung ở thời điểm $t$. |
-| $p_i(t)$ | Công suất thiết bị | Công suất riêng của thiết bị $i$ tại thời điểm $t$. |
-| $\varepsilon(t)$ | Nhiễu và phần chưa giải thích | Nhiễu đo, sai số mô hình và công suất của tải chưa được mô hình hóa. |
-| $s_i(t)$ | Trạng thái thiết bị | Trạng thái tắt/bật của thiết bị $i$ trong mô hình đơn giản, với $s_i(t) \in \{0,1\}$. |
-| $w_i$ | Công suất đặc trưng | Công suất của thiết bị $i$ khi thiết bị bật. |
-| $S$ | Tập thiết bị mục tiêu | Tập thiết bị được phân tách khi hệ thống chỉ theo dõi một phần tải. |
-| $r(t)$ | Phần công suất còn lại | Công suất của các thiết bị ngoài $S$, tải chưa biết và sai số. |
-| $\Delta t$ | Khoảng lấy mẫu | Khoảng thời gian giữa hai mẫu liên tiếp. |
-| $\mathbf{P}$ | Vector công suất tổng | Chuỗi công suất tổng theo thời gian. |
-| $\mathbf{X}$ | Ma trận tín hiệu thiết bị | Ma trận có cột thứ $i$ chứa chuỗi công suất $p_i(t)$. |
+| $y_{i,t}$ | Phần tử tín hiệu thiết bị | Công suất chưa biết của thiết bị $i$ tại thời điểm $t$. |
+| $\mathbf{y}_i$ | Vector tín hiệu thiết bị | Vector công suất của thiết bị $i$ trong toàn bộ khoảng quan sát. |
+| $\mathbf{Y}$ | Ma trận biến quyết định | Ma trận tạo bởi các vector $\mathbf{y}_i$, trong đó phần tử hàng $i$, cột $t$ là $y_{i,t}$. |
+| $\mathcal{Y}_i$ | Tập vector khả dĩ | Các vector tín hiệu hoặc dấu vết công suất hợp lệ của thiết bị $i$. |
+| $\varepsilon(t)$ | Nhiễu và tải chưa giải thích | Phần sai khác giữa tín hiệu tổng và tổng các thiết bị được mô hình hóa. |
 
 ## Formulation
-
-### Mô hình tổng hợp
-
-Theo nghiên cứu, công suất đo tại một điểm là tổng đóng góp của các thiết bị:
+### Dữ liệu và biến quyết định
+Cho chuỗi công suất tổng đã đo $P(1),\ldots,P(T)$ và thư viện dấu vết tải của $N$ thiết bị. Với mỗi thiết bị $i$, ta có vector tín hiệu:
 
 $$
-P(t) = \sum_{i=1}^{N} p_i(t)
+\mathbf{y}_i = [y_{i,1},y_{i,2},\ldots,y_{i,T}]^\mathsf{T}
+\in \mathbb{R}_+^T
 $$
 
-Khi xét nhiễu và tải chưa được mô hình hóa:
+Biến cần tìm là ma trận tạo bởi các vector này:
 
 $$
-P(t) = \sum_{i=1}^{N} p_i(t) + \varepsilon(t)
+\mathbf{Y} =
+\begin{bmatrix}
+\mathbf{y}_1^\mathsf{T} \\
+\mathbf{y}_2^\mathsf{T} \\
+\vdots \\
+\mathbf{y}_N^\mathsf{T}
+\end{bmatrix}
+= [y_{i,t}]_{N\times T}
+=
+\begin{bmatrix}
+y_{1,1} & \cdots & y_{1,T} \\
+\vdots & \ddots & \vdots \\
+y_{N,1} & \cdots & y_{N,T}
+\end{bmatrix}
+\in \mathbb{R}_+^{N\times T}.
 $$
 
-### Bài toán suy luận ngược
+Trong đó:
 
-NILM chỉ quan sát $P(t)$ nhưng cần ước lượng các tín hiệu riêng:
+- $i$ là chỉ số của thiết bị, với $i=1,\ldots,N$.
+- $t$ là chỉ số thời gian, với $t=1,\ldots,T$.
+- $\mathbf{y}_i$ là vector công suất của thiết bị $i$ trong toàn bộ khoảng quan sát.
+- $\mathbf{Y}_{i,:}=\mathbf{y}_i^\mathsf{T}$ là hàng thứ $i$ của ma trận $\mathbf{Y}$.
+- Cột thứ $t$ của $\mathbf{Y}$ chứa đóng góp của tất cả thiết bị tại thời điểm $t$.
+- $y_{i,t}$ là công suất mà thiết bị $i$ đóng góp tại thời điểm $t$.
 
-$$
-\widehat{p}_1(t),\widehat{p}_2(t),\ldots,\widehat{p}_N(t)
-$$
-
-Hay viết ngắn gọn:
-
-$$
-\text{Từ } P(t) \text{, ước lượng } \{p_i(t)\}_{i=1}^{N}
-$$
-
-Đây là bài toán ngược vì nhiều tổ hợp thiết bị có thể tạo ra cùng một công suất tổng. NILM cần dùng thêm dấu vết tải, sự kiện chuyển trạng thái, đặc tính thời gian và các giả định về thiết bị.
-### Mô hình trạng thái bật/tắt
-
-Với thiết bị Type-I, có thể xấp xỉ:
+Từ các công suất thiết bị $y_{1,t},y_{2,t},\ldots,y_{N,t}$, công suất tổng tại thời điểm $t$ được viết gộp là:
 
 $$
-p_i(t) \approx w_i s_i(t)
+P(t) = \sum_{i=1}^{N} y_{i,t} + \varepsilon(t)
+     = \mathbf{1}_N^\mathsf{T}\mathbf{Y}_{:,t} + \varepsilon(t)
 $$
 
-Suy ra:
+Trong đó:
+
+- $P(t)$ là tổng tải đo được tại thời điểm $t$.
+- $\mathbf{Y}_{:,t}=[y_{1,t},y_{2,t},\ldots,y_{N,t}]^\mathsf{T}$ là cột thứ $t$ của ma trận biến quyết định $\mathbf{Y}$.
+- $\mathbf{1}_N$ là vector cột gồm $N$ phần tử bằng $1$.
+- $\varepsilon(t)$ là nhiễu, sai số mô hình và tải chưa được giải thích.
+- Nếu bỏ qua nhiễu và tải chưa biết, đặt $\varepsilon(t)=0$; khi đó $P(t)=\sum_{i=1}^{N}y_{i,t}$.
+
+### Bài toán tối ưu
+
+Cho ma trận đầu vào $\mathbf{X}$ chứa dữ liệu đo tổng hoặc các đặc trưng được trích xuất từ dữ liệu đó. Hàm NILM ánh xạ dữ liệu đầu vào thành ma trận công suất thiết bị dự đoán:
 
 $$
-P(t) \approx \sum_{i=1}^{N} w_i s_i(t) + \varepsilon(t)
+\mathbf{X}=[\mathbf{x}_1,\mathbf{x}_2,\ldots,\mathbf{x}_T]
+\in\mathbb{R}^{d_x\times T},
+\qquad
+\mathbf{x}_t=\begin{bmatrix}P(t)\end{bmatrix}
+\text{ nếu chỉ đo công suất tổng}
 $$
 
-Thiết bị nhiều trạng thái hoặc có công suất biến thiên liên tục cần mô hình $p_i(t)$ phức tạp hơn.
-
-### Dạng vector và năng lượng
-
-Với $t=1,\ldots,T$:
-
 $$
-\mathbf{P} = \mathbf{X}\mathbf{1} + \boldsymbol{\varepsilon}
+\mathbf{X}\xrightarrow{\ f\ }\widehat{\mathbf{Y}}=f(\mathbf{X})
 $$
 
-Năng lượng của thiết bị $i$ trong khoảng quan sát là:
+Với dữ liệu huấn luyện gồm các cặp $(\mathbf{X}^{(m)},\mathbf{Y}^{(m)})$, ta tìm hàm $f\in\mathcal{F}$ sao cho $\widehat{\mathbf{Y}}$ gần $\mathbf{Y}$ nhất:
 
 $$
-E_i \approx \sum_{t=1}^{T} p_i(t)\,\Delta t
+\widehat{f}\in\underset{f\in\mathcal{F}}{\arg\min}\;
+\frac{1}{M}\sum_{m=1}^{M}
+\left\|f(\mathbf{X}^{(m)})-\mathbf{Y}^{(m)}\right\|_F^2
 $$
 
-### Chỉ phân tách một số thiết bị
-
-Nếu chỉ theo dõi tập $S$:
-
+Để đầu ra vẫn phù hợp với phép đo tổng, ta thêm điều kiện tái tạo:
 $$
-P(t) = \sum_{i \in S} p_i(t) + r(t)
+\left\|\mathbf{p}^{(m)}-\mathbf{1}_N^\mathsf{T}f(\mathbf{X}^{(m)})\right\|_2\le\delta
 $$
 
-Phần $r(t)$ gộp các thiết bị ngoài mục tiêu, tải chưa biết và sai số. Vì vậy, mô hình có thể dự đoán ít thiết bị hơn số thiết bị thực sự đang hoạt động mà vẫn giữ phần công suất còn lại trong $r(t)$.
-
+Vì vậy, các điều kiện cơ bản của bài toán là:
+1. **Công suất không âm:** $\widehat{y}_{i,t}\ge0$ theo từng phần tử. Dùng $\ge0$ vì thiết bị có thể ở trạng thái tắt và có công suất bằng $0$.
+2. **Đầu ra gần đầu ra thật:** tối thiểu hóa $\|\widehat{\mathbf{Y}}-\mathbf{Y}\|_F^2$. Chuẩn Frobenius đo tổng bình phương sai khác của mọi thiết bị và mọi thời điểm.
+3. **Khớp công suất tổng:** $\mathbf{1}_N^\mathsf{T}\widehat{\mathbf{Y}}$ phải gần $\mathbf{p}$; $\delta=0$ khi giả định không có nhiễu.
+4. **Tín hiệu hợp lệ:** hàng thứ $i$ của $\widehat{\mathbf{Y}}$ thuộc tập dấu vết khả dĩ $\mathcal{Y}_i$.
+5. **Hàm thuộc lớp cho phép:** $f\in\mathcal{F}$, chẳng hạn lớp các mô hình học máy hoặc bộ phân loại được chọn.
 ### Nguồn
-
-Mô hình tổng và nhiệm vụ phân rã dựa trên [[Papers/contents/zoha-2012-nilm-survey-general-framework-of-nilm|Zoha et al. (2012), General Framework of NILM]]. Các thành phần $\varepsilon(t)$, biến trạng thái, dạng vector và số dư $r(t)$ là phần đại số hóa mở rộng từ mô hình đó.
+Mô hình tổng $P(t)=p_1(t)+\cdots+p_n(t)$ và mô tả phương pháp tối ưu khớp tín hiệu tổng với tổ hợp tín hiệu thiết bị dựa trên [[Papers/contents/zoha-2012-nilm-survey-general-framework-of-nilm|Zoha et al. (2012), General Framework of NILM]] và [[Papers/contents/zoha-2012-nilm-survey-learning-and-inference-in-nilm-systems|Learning and Inference in NILM Systems]].
