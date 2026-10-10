@@ -63,7 +63,6 @@ $$
 $$
 
 Đây là bài toán ngược vì nhiều tổ hợp thiết bị có thể tạo ra cùng một công suất tổng. NILM cần dùng thêm dấu vết tải, sự kiện chuyển trạng thái, đặc tính thời gian và các giả định về thiết bị.
-
 ### Mô hình trạng thái bật/tắt
 
 Với thiết bị Type-I, có thể xấp xỉ:
