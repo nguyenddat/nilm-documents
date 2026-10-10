@@ -1,0 +1,22 @@
+filters:
+  and:
+    - 'type == "concept"'
+    - 'file.ext == "md"'
+
+properties:
+  status:
+    displayName: Trạng thái
+  aliases:
+    displayName: Tên gọi khác
+  tags:
+    displayName: Chủ đề
+
+views:
+  - type: table
+    name: Khái niệm và định nghĩa
+    order:
+      - file.name
+      - aliases
+      - status
+      - tags
+      - file.mtime

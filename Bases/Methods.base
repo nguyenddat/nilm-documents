@@ -1,0 +1,22 @@
+filters:
+  and:
+    - 'type == "method"'
+    - 'file.ext == "md"'
+
+properties:
+  status:
+    displayName: Trạng thái
+  sources:
+    displayName: Nguồn
+  related:
+    displayName: Liên quan
+
+views:
+  - type: table
+    name: Phương pháp
+    order:
+      - file.name
+      - status
+      - sources
+      - related
+      - file.mtime

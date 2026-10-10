@@ -1,0 +1,25 @@
+filters:
+  and:
+    - 'file.ext == "md"'
+    - 'type != "index"'
+    - 'type != ""'
+
+properties:
+  type:
+    displayName: Loại
+  status:
+    displayName: Trạng thái
+  tags:
+    displayName: Chủ đề
+  file.mtime:
+    displayName: Cập nhật
+
+views:
+  - type: table
+    name: Tất cả ghi chú nghiên cứu
+    order:
+      - file.name
+      - type
+      - status
+      - tags
+      - file.mtime

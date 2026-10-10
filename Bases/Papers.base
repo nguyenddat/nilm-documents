@@ -1,0 +1,29 @@
+filters:
+  and:
+    - 'type == "paper"'
+    - 'file.ext == "md"'
+
+properties:
+  authors:
+    displayName: Tác giả
+  year:
+    displayName: Năm
+  venue:
+    displayName: Tạp chí / hội nghị
+  doi:
+    displayName: DOI
+  topics:
+    displayName: Chủ đề
+  status:
+    displayName: Trạng thái đọc
+
+views:
+  - type: table
+    name: Thư mục bài báo
+    order:
+      - file.name
+      - authors
+      - year
+      - venue
+      - topics
+      - status

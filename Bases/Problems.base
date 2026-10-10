@@ -1,0 +1,22 @@
+filters:
+  and:
+    - 'type == "problem"'
+    - 'file.ext == "md"'
+
+properties:
+  status:
+    displayName: Trạng thái
+  tags:
+    displayName: Chủ đề
+  related:
+    displayName: Liên quan
+
+views:
+  - type: table
+    name: Bài toán NILM
+    order:
+      - file.name
+      - status
+      - tags
+      - related
+      - file.mtime

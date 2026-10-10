@@ -1,0 +1,22 @@
+filters:
+  and:
+    - 'type == "question"'
+    - 'file.ext == "md"'
+
+properties:
+  status:
+    displayName: Trạng thái
+  priority:
+    displayName: Ưu tiên
+  related:
+    displayName: Liên quan
+
+views:
+  - type: table
+    name: Câu hỏi nghiên cứu mở
+    order:
+      - file.name
+      - status
+      - priority
+      - related
+      - file.mtime

@@ -1,0 +1,27 @@
+filters:
+  and:
+    - 'type == "dataset"'
+    - 'file.ext == "md"'
+
+properties:
+  year:
+    displayName: Năm
+  sampling_rate:
+    displayName: Tần số lấy mẫu
+  measurement:
+    displayName: Đại lượng đo
+  appliances:
+    displayName: Thiết bị
+  status:
+    displayName: Trạng thái
+
+views:
+  - type: table
+    name: Bộ dữ liệu
+    order:
+      - file.name
+      - year
+      - sampling_rate
+      - measurement
+      - appliances
+      - status
